@@ -74,6 +74,24 @@ class RiscvVectorElementLength(UInt32):
             raise TypeError("ELEN is not a power of 2: %d" % self.value)
 
 
+class RiscvVectorLanes(UInt32):
+    min = 0
+    max = 65536
+
+    def _check(self):
+        super()._check()
+
+        # 0 means "unbounded": no lane-count limit is modeled, and every
+        # vector instruction is assumed to process all of its active
+        # elements in a single pass, matching gem5's historical behavior.
+        if self.value == 0:
+            return
+
+        # Otherwise, lanes needs to be a whole power of 2, same as VLEN.
+        if self.value & (self.value - 1) != 0:
+            raise TypeError("lanes is not a power of 2: %d" % self.value)
+
+
 class RiscvType(Enum):
     vals = ["RV32", "RV64"]
 
@@ -105,6 +123,15 @@ class RiscvISA(BaseISA):
         64,
         "Length of each vector element in bits. \
         ELEN in Ch. 2 of RISC-V vector spec",
+    )
+    lanes = Param.RiscvVectorLanes(
+        0,
+        "Number of parallel vector execution lanes. Limits how many \
+        elements of a vector instruction can be processed per cycle, \
+        scaling both the completion latency and the functional-unit \
+        occupancy of vector instructions accordingly. 0 (default) means \
+        unbounded: the whole vector register group is processed in a \
+        single pass, matching gem5's previous (unrealistic) behavior.",
     )
     privilege_mode_set = Param.PrivilegeModeSet(
         "MSU",

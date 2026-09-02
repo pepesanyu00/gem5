@@ -260,6 +260,7 @@ RegClass ccRegClass(CCRegClass, CCRegClassName, 0, debug::IntRegs);
 
 ISA::ISA(const Params &p) : BaseISA(p, "riscv"),
     _rvType(p.riscv_type), enableRvv(p.enable_rvv), vlen(p.vlen), elen(p.elen),
+    lanes(p.lanes),
     _privilegeModeSet(p.privilege_mode_set),
     _wfiResumeOnPending(p.wfi_resume_on_pending), _enableZcd(p.enable_Zcd)
 {
@@ -279,6 +280,17 @@ ISA::ISA(const Params &p) : BaseISA(p, "riscv"),
     inform("RVV enabled, VLEN = %d bits, ELEN = %d bits",
             p.vlen, p.elen);
 
+    // lanes == 0 means "unbounded": no lane-count limit is modeled, the
+    // whole vector register group is processed in a single pass, exactly
+    // as before this feature was introduced.
+    if (p.lanes > 0) {
+        fatal_if(p.lanes > (p.vlen / 8),
+            "lanes (%d) cannot exceed the maximum number of elements per "
+            "vector register at the smallest supported element width "
+            "(VLEN / 8 = %d)", p.lanes, p.vlen / 8);
+        inform("RVV vector lanes = %d (elements processed per cycle)",
+                p.lanes);
+    }
 
     miscRegFile.resize(NUM_PHYS_MISCREGS);
     clear();

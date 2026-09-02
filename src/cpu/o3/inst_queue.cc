@@ -830,6 +830,26 @@ InstructionQueue::scheduleReadyInsts()
             }
         }
 
+        // Instructions that are limited by a finite number of
+        // data-parallel lanes (e.g. vector/SIMD ops) may need multiple
+        // sequential passes ("chimes") through their functional unit to
+        // process all of their active elements. This scales both the
+        // completion latency and, for pipelined FUs, how long the FU
+        // stays occupied before it can accept a new instruction.
+        // "passes" defaults to 1 for every instruction that isn't
+        // lane-limited, which reproduces the original timing exactly.
+        Cycles passes = Cycles(1);
+        bool pipelined = true;
+        if (idx > FUPool::NoFreeFU) {
+            pipelined = fuPool->isPipelined(op_class);
+            passes = issuing_inst->numChimePasses();
+            if (passes > Cycles(1)) {
+                op_latency = pipelined ?
+                    (op_latency + passes - Cycles(1)) :
+                    Cycles(uint64_t(op_latency) * uint64_t(passes));
+            }
+        }
+
         // If we have an instruction that doesn't require a FU, or a
         // valid FU, then schedule for execution.
         if (idx > FUPool::NoFreeFU || idx == FUPool::NoNeedFU ||
@@ -853,7 +873,6 @@ InstructionQueue::scheduleReadyInsts()
                   issuing_inst->setNoCapableFU();
             } else {
                 assert(idx != FUPool::NoCapableFU);
-                bool pipelined = fuPool->isPipelined(op_class);
                 // Generate completion event for the FU
                 ++wbOutstanding;
                 FUCompletion *execution = new FUCompletion(issuing_inst,
@@ -866,6 +885,16 @@ InstructionQueue::scheduleReadyInsts()
                     // If FU isn't pipelined, then it must be freed
                     // upon the execution completing.
                     execution->setFreeFU();
+                } else if (passes > Cycles(1)) {
+                    // The FU is pipelined w.r.t. independent instructions,
+                    // but still needs to sequentially feed each
+                    // lane-group (chime) through it, so it stays occupied
+                    // for `passes` cycles instead of just 1.
+                    cpu->schedule(
+                        new EventFunctionWrapper(
+                            [this, idx]{ fuPool->freeUnitNextCycle(idx); },
+                            name() + ".vecFUFree", true),
+                        cpu->clockEdge(Cycles(passes - Cycles(1))));
                 } else {
                     // Add the FU onto the list of FU's to be freed next cycle.
                     fuPool->freeUnitNextCycle(idx);

@@ -52,6 +52,7 @@
 #include "arch/generic/pcstate.hh"
 #include "base/logging.hh"
 #include "base/refcnt.hh"
+#include "base/types.hh"
 #include "cpu/op_class.hh"
 #include "cpu/reg_class.hh"
 #include "cpu/static_inst_fwd.hh"
@@ -212,6 +213,36 @@ class StaticInst : public RefCounted, public StaticInstFlags
 
     /// Operation class.  Used to select appropriate function unit in issue.
     OpClass opClass() const { return _opClass; }
+
+    /**
+     * Number of sequential passes ("chimes", in classic vector-machine
+     * terminology) this instruction's functional unit must make in order
+     * to process all of its data-parallel work (e.g. the active elements
+     * of a vector/SIMD instruction). This is used by the issue logic to
+     * scale both the completion latency and the functional-unit
+     * occupancy of instructions that are limited by a finite number of
+     * data-parallel lanes: an instruction with N active elements and a
+     * functional unit that can only process L elements per cycle needs
+     * ceil(N / L) passes.
+     *
+     * The thread context is passed in (rather than caching the lane
+     * count in the instruction itself at decode time) so that the
+     * lane-count configuration can be read fresh, per issuing thread,
+     * straight from that thread's ISA object. This avoids having to
+     * thread a new "lanes" constructor argument through every one of the
+     * many vector instruction constructors/decode templates.
+     *
+     * The default implementation returns 1, meaning "no lane-count
+     * scaling": the instruction completes and frees its functional unit
+     * exactly as it does today. ISAs that model a configurable number of
+     * vector lanes (e.g. RISC-V RVV, Arm SVE) should override this in
+     * their vector instruction base classes.
+     */
+    virtual Cycles
+    numChimePasses(ThreadContext *tc) const
+    {
+        return Cycles(1);
+    }
 
 
     /// Return logical index (architectural reg num) of i'th destination reg.

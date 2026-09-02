@@ -550,6 +550,11 @@ class DynInst : public ExecContext, public RefCounted
     bool isInteger()      const { return staticInst->isInteger(); }
     bool isFloating()     const { return staticInst->isFloating(); }
     bool isVector()       const { return staticInst->isVector(); }
+    Cycles
+    numChimePasses() const
+    {
+        return staticInst->numChimePasses(tcBase());
+    }
     bool isControl()      const { return staticInst->isControl(); }
     bool isCall()         const { return staticInst->isCall(); }
     bool isReturn()       const { return staticInst->isReturn(); }

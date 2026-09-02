@@ -37,12 +37,27 @@
 #include "arch/riscv/regs/vector.hh"
 #include "arch/riscv/utility.hh"
 #include "cpu/static_inst.hh"
+#include "cpu/thread_context.hh"
 
 namespace gem5
 {
 
 namespace RiscvISA
 {
+
+Cycles
+VectorMicroInst::numChimePasses(ThreadContext *tc) const
+{
+    if (microVl == 0)
+        return Cycles(1);
+
+    auto *isa = static_cast<ISA *>(tc->getIsaPtr());
+    uint32_t lanes = isa->getNumVecLanes();
+    if (lanes == 0)
+        return Cycles(1);
+
+    return Cycles((microVl + lanes - 1) / lanes);
+}
 
 /**
  * This function translates the 3-bit value of vlmul bits to the corresponding

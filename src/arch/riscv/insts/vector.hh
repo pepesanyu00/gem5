@@ -161,6 +161,18 @@ protected:
     {
         this->flags[IsVector] = true;
     }
+
+  public:
+    /**
+     * Scales this microop's completion latency and functional-unit
+     * occupancy according to the number of vector lanes configured on
+     * the issuing thread's ISA (RiscvISA::lanes). Every arithmetic and
+     * memory vector microop derives from this class and processes up to
+     * `microVl` elements (already computed from VLEN/SEW/LMUL at decode
+     * time), so a single override here covers all of RVV without having
+     * to change any of the per-instruction constructors/decode blocks.
+     */
+    Cycles numChimePasses(ThreadContext *tc) const override;
 };
 
 class VectorNopMicroInst : public RiscvMicroInst

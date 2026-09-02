@@ -94,6 +94,13 @@ class ISA : public BaseISA
     */
     unsigned elen;
 
+    /** Number of parallel vector execution lanes. Limits how many
+     *  elements of a vector instruction can be processed per cycle.
+     *  0 means unbounded (the whole vector register group is processed
+     *  in a single pass).
+    */
+    unsigned lanes;
+
     /** The combination of privilege modes
      *  in Privilege Levels section of RISC-V privileged spec
      */
@@ -182,6 +189,9 @@ class ISA : public BaseISA
     unsigned getVecLenInBits() { return vlen; }
     unsigned getVecLenInBytes() { return vlen >> 3; }
     unsigned getVecElemLenInBits() { return elen; }
+
+    /** Number of parallel vector execution lanes (0 = unbounded). */
+    unsigned getNumVecLanes() const { return lanes; }
 
     int64_t getVectorLengthInBytes() const override { return vlen >> 3; }
 
