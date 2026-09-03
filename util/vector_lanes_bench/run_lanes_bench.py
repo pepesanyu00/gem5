@@ -45,7 +45,9 @@ from m5.objects import (
 )
 
 from gem5.components.boards.simple_board import SimpleBoard
-from gem5.components.cachehierarchies.classic.no_cache import NoCache
+from gem5.components.cachehierarchies.classic.private_l1_private_l2_cache_hierarchy import (
+    PrivateL1PrivateL2CacheHierarchy,
+)
 from gem5.components.memory import SingleChannelDDR3_1600
 from gem5.components.processors.base_cpu_core import BaseCPUCore
 from gem5.components.processors.base_cpu_processor import BaseCPUProcessor
@@ -118,7 +120,16 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
-cache_hierarchy = NoCache()
+## IMPORTANT: a real (even minimal) cache hierarchy is required here. The
+## benchmark's instruction footprint is tiny (a handful of static
+## instructions in a tight loop), so any private L1I will hold it entirely
+## resident after the first iteration; NoCache() instead sends every
+## instruction fetch all the way to DRAM, which completely swamps the
+## timing signal we actually want to measure (see the analysis in the
+## chat/plan.md for the full post-mortem of this exact mistake).
+cache_hierarchy = PrivateL1PrivateL2CacheHierarchy(
+    l1d_size="32KiB", l1i_size="32KiB", l2_size="512KiB"
+)
 memory = SingleChannelDDR3_1600()
 processor = BaseCPUProcessor(
     cores=[
