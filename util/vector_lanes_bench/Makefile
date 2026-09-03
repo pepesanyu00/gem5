@@ -23,12 +23,13 @@
 # 2.38 / gcc >= 13, or an equivalent riscv-gnu-toolchain build with 'v'
 # support).
 
-CROSS_COMPILE ?= riscv64-unknown-elf-
-CC             = $(CROSS_COMPILE)gcc
+CROSS_COMPILE ?= riscv64-unknown-linux-gnu-
+CC             = $(CROSS_COMPILE)g++
+M5FLAGS_RISCV = -I/home/jsanchez/gem5/include -L/home/jsanchez/gem5/util/m5/build/riscv/out -lm5
 ARCH           = rv64gcv
 ABI            = lp64d
 
-CFLAGS  = -march=$(ARCH) -mabi=$(ABI) -nostdlib -static -Wl,-e,_start
+CFLAGS  = -march=$(ARCH) -mabi=$(ABI) -nostdlib -static -Wl,-e,_start $(M5FLAGS_RISCV)
 BUILD   = build
 
 # SEW/LMUL combinations used by the default `all` target. Edit freely.

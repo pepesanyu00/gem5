@@ -39,7 +39,10 @@ across gem5 versions/CPU configurations) and compare
 
 import argparse
 
-from m5.objects import DefaultFUPool, RiscvO3CPU
+from m5.objects import (
+    DefaultFUPool,
+    RiscvO3CPU,
+)
 
 from gem5.components.boards.simple_board import SimpleBoard
 from gem5.components.cachehierarchies.classic.no_cache import NoCache
@@ -84,25 +87,34 @@ requires(isa_required=ISA.RISCV)
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument(
-    "--binary", required=True, type=str, help="Path to a benchmark binary "
-    "built by util/vector_lanes_bench/Makefile"
+    "--binary",
+    required=True,
+    type=str,
+    help="Path to a benchmark binary "
+    "built by util/vector_lanes_bench/Makefile",
 )
 parser.add_argument("--vlen", type=int, default=256, help="VLEN in bits")
 parser.add_argument("--elen", type=int, default=64, help="ELEN in bits")
 parser.add_argument(
-    "--lanes", type=int, default=0,
+    "--lanes",
+    type=int,
+    default=0,
     help="Number of vector execution lanes (0 = unbounded/unrealistic "
-    "default, matching gem5's historical behavior)"
+    "default, matching gem5's historical behavior)",
 )
 parser.add_argument(
-    "--vadd-lat", type=int, default=None,
+    "--vadd-lat",
+    type=int,
+    default=None,
     help="Override the base (lanes=0-equivalent) latency of SimdAdd, "
-    "in cycles. Default: gem5 stock value (1)."
+    "in cycles. Default: gem5 stock value (1).",
 )
 parser.add_argument(
-    "--vmul-lat", type=int, default=None,
+    "--vmul-lat",
+    type=int,
+    default=None,
     help="Override the base latency of SimdMult, in cycles. Default: "
-    "gem5 stock value (1)."
+    "gem5 stock value (1).",
 )
 args = parser.parse_args()
 
@@ -136,3 +148,5 @@ print(
     f"vmul_lat={args.vmul_lat}"
 )
 simulator.run()
+
+print("simulación terminada!")
