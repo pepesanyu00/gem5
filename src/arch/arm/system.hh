@@ -131,6 +131,9 @@ class ArmSystem : public System
     /** SME vector length at reset, in quadwords */
     const unsigned _smeVL;
 
+    /** Number of parallel SVE execution lanes (0 = unbounded) */
+    const unsigned _sveLanes;
+
     /**
      * True if the Semihosting interface is enabled.
      */
@@ -210,6 +213,9 @@ class ArmSystem : public System
 
     /** Returns the SME vector length at reset, in quadwords */
     unsigned smeVL() const { return _smeVL; }
+
+    /** Returns the number of parallel SVE execution lanes (0 = unbounded) */
+    unsigned sveLanes() const { return _sveLanes; }
 
     /** Returns the supported physical address range in bits if the highest
      * implemented exception level is 64 bits (ARMv8) */

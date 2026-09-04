@@ -79,6 +79,7 @@ ArmSystem::ArmSystem(const Params &p)
       _haveLargeAsid64(p.have_large_asid_64),
       _sveVL(p.sve_vl),
       _smeVL(p.sme_vl),
+      _sveLanes(p.sve_lanes),
       semihosting(p.semihosting),
       release(p.release),
       multiProc(p.multi_proc)

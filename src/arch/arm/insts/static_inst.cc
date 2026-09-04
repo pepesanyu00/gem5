@@ -1303,6 +1303,20 @@ ArmStaticInst::getCurSveVecLenInBits(ThreadContext *tc)
     return isa->getCurSveVecLenInBits();
 }
 
+Cycles
+ArmStaticInst::numSveChimePasses(ThreadContext *tc, unsigned eCount)
+{
+    if (eCount == 0)
+        return Cycles(1);
+
+    auto *isa = static_cast<ArmISA::ISA *>(tc->getIsaPtr());
+    unsigned lanes = isa->getNumSveLanes();
+    if (lanes == 0)
+        return Cycles(1);
+
+    return Cycles((eCount + lanes - 1) / lanes);
+}
+
 unsigned
 ArmStaticInst::getCurSmeVecLenInBits(ThreadContext *tc)
 {

@@ -101,6 +101,9 @@ namespace ArmISA
         /** SME vector length in quadwords */
         unsigned smeVL;
 
+        /** Number of parallel SVE execution lanes (0 = unbounded) */
+        unsigned sveLanes;
+
         /** This could be either a FS or a SE release */
         const ArmRelease *release;
 
@@ -366,6 +369,9 @@ namespace ArmISA
         unsigned getCurSveVecLenInBits() const;
 
         unsigned getCurSveVecLenInBitsAtReset() const { return sveVL * 128; }
+
+        /** Number of parallel SVE execution lanes (0 = unbounded) */
+        unsigned getNumSveLanes() const { return sveLanes; }
 
         unsigned getCurSmeVecLenInBits() const;
 

@@ -37,6 +37,7 @@ from m5.objects.ArmPMU import ArmPMU
 from m5.objects.ArmSystem import (
     ArmRelease,
     SmeVectorLength,
+    SveVectorLanes,
     SveVectorLength,
 )
 from m5.objects.BaseISA import BaseISA
@@ -189,6 +190,11 @@ class ArmISA(BaseISA):
     )
     sme_vl_se = Param.SmeVectorLength(
         1, "SME vector length in quadwords (128-bit), SE-mode only"
+    )
+    sve_lanes_se = Param.SveVectorLanes(
+        0,
+        "Number of parallel SVE execution lanes, SE-mode only \
+        (see ArmSystem.sve_lanes for the FS-mode equivalent)",
     )
 
     # Recurse into subnodes to generate DTB entries. This is mainly needed to

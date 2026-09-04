@@ -63,6 +63,24 @@ class SmeVectorLength(UInt8):
             )
 
 
+class SveVectorLanes(UInt32):
+    min = 0
+    max = 65536
+
+    def _check(self):
+        super()._check()
+
+        # 0 means "unbounded": no lane-count limit is modeled, and every
+        # SVE instruction is assumed to process all of its active elements
+        # in a single pass, matching gem5's historical behavior.
+        if self.value == 0:
+            return
+
+        # Otherwise, lanes needs to be a whole power of 2.
+        if self.value & (self.value - 1) != 0:
+            raise TypeError("lanes is not a power of 2: %d" % self.value)
+
+
 class ArmExtension(ScopedEnum):
     vals = [
         "FEAT_AES",
@@ -331,6 +349,15 @@ class ArmSystem(System):
     )
     sme_vl = Param.SveVectorLength(
         1, "SME vector length in quadwords (128-bit)"
+    )
+    sve_lanes = Param.SveVectorLanes(
+        0,
+        "Number of parallel SVE execution lanes. Limits how many \
+        elements of an SVE instruction can be processed per cycle, \
+        scaling both the completion latency and the functional-unit \
+        occupancy of SVE instructions accordingly. 0 (default) means \
+        unbounded: the whole vector is processed in a single pass, \
+        matching gem5's previous (unrealistic) behavior.",
     )
     semihosting = Param.ArmSemihosting(
         NULL,

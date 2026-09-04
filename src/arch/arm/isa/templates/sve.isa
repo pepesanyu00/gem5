@@ -72,6 +72,13 @@ class %(class_name)s : public %(base_class)s
     }
 
     Fault execute(ExecContext *, trace::InstRecord *) const override;
+
+    Cycles
+    numChimePasses(ThreadContext *tc) const override
+    {
+        return ArmStaticInst::numSveChimePasses(tc,
+            ArmStaticInst::getCurSveVecLen<Element>(tc));
+    }
 };
 }};
 
@@ -98,6 +105,13 @@ class %(class_name)s : public %(base_class)s
     }
 
     Fault execute(ExecContext *, trace::InstRecord *) const override;
+
+    Cycles
+    numChimePasses(ThreadContext *tc) const override
+    {
+        return ArmStaticInst::numSveChimePasses(tc,
+            ArmStaticInst::getCurSveVecLen<Element>(tc));
+    }
 };
 }};
 
@@ -122,6 +136,13 @@ class %(class_name)s : public %(base_class)s
     }
 
     Fault execute(ExecContext *, trace::InstRecord *) const override;
+
+    Cycles
+    numChimePasses(ThreadContext *tc) const override
+    {
+        return ArmStaticInst::numSveChimePasses(tc,
+            ArmStaticInst::getCurSveVecLen<Element>(tc));
+    }
 };
 }};
 
@@ -147,6 +168,13 @@ class %(class_name)s : public %(base_class)s
     }
 
     Fault execute(ExecContext *, trace::InstRecord *) const override;
+
+    Cycles
+    numChimePasses(ThreadContext *tc) const override
+    {
+        return ArmStaticInst::numSveChimePasses(tc,
+            ArmStaticInst::getCurSveVecLen<Element>(tc));
+    }
 };
 }};
 
@@ -171,6 +199,13 @@ class %(class_name)s : public %(base_class)s
     }
 
     Fault execute(ExecContext *, trace::InstRecord *) const override;
+
+    Cycles
+    numChimePasses(ThreadContext *tc) const override
+    {
+        return ArmStaticInst::numSveChimePasses(tc,
+            ArmStaticInst::getCurSveVecLen<Element>(tc));
+    }
 };
 }};
 
@@ -198,6 +233,13 @@ class %(class_name)s : public %(base_class)s
     }
 
     Fault execute(ExecContext *, trace::InstRecord *) const override;
+
+    Cycles
+    numChimePasses(ThreadContext *tc) const override
+    {
+        return ArmStaticInst::numSveChimePasses(tc,
+            ArmStaticInst::getCurSveVecLen<Element>(tc));
+    }
 };
 }};
 
@@ -224,6 +266,13 @@ class %(class_name)s : public %(base_class)s
     }
 
     Fault execute(ExecContext *, trace::InstRecord *) const override;
+
+    Cycles
+    numChimePasses(ThreadContext *tc) const override
+    {
+        return ArmStaticInst::numSveChimePasses(tc,
+            ArmStaticInst::getCurSveVecLen<Element>(tc));
+    }
 };
 }};
 
@@ -250,6 +299,13 @@ class %(class_name)s : public %(base_class)s
     }
 
     Fault execute(ExecContext *, trace::InstRecord *) const override;
+
+    Cycles
+    numChimePasses(ThreadContext *tc) const override
+    {
+        return ArmStaticInst::numSveChimePasses(tc,
+            ArmStaticInst::getCurSveVecLen<Element>(tc));
+    }
 };
 }};
 
@@ -276,6 +332,13 @@ class %(class_name)s : public %(base_class)s
     }
 
     Fault execute(ExecContext *, trace::InstRecord *) const override;
+
+    Cycles
+    numChimePasses(ThreadContext *tc) const override
+    {
+        return ArmStaticInst::numSveChimePasses(tc,
+            ArmStaticInst::getCurSveVecLen<Element>(tc));
+    }
 };
 }};
 
@@ -303,6 +366,13 @@ class %(class_name)s : public %(base_class)s
     }
 
     Fault execute(ExecContext *, trace::InstRecord *) const override;
+
+    Cycles
+    numChimePasses(ThreadContext *tc) const override
+    {
+        return ArmStaticInst::numSveChimePasses(tc,
+            ArmStaticInst::getCurSveVecLen<Element>(tc));
+    }
 };
 }};
 
@@ -329,6 +399,13 @@ class %(class_name)s : public %(base_class)s
     }
 
     Fault execute(ExecContext *, trace::InstRecord *) const override;
+
+    Cycles
+    numChimePasses(ThreadContext *tc) const override
+    {
+        return ArmStaticInst::numSveChimePasses(tc,
+            ArmStaticInst::getCurSveVecLen<Element>(tc));
+    }
 };
 }};
 
@@ -355,6 +432,13 @@ class %(class_name)s : public %(base_class)s
     }
 
     Fault execute(ExecContext *, trace::InstRecord *) const override;
+
+    Cycles
+    numChimePasses(ThreadContext *tc) const override
+    {
+        return ArmStaticInst::numSveChimePasses(tc,
+            ArmStaticInst::getCurSveVecLen<Element>(tc));
+    }
 };
 }};
 
@@ -382,6 +466,13 @@ class %(class_name)s : public %(base_class)s
     }
 
     Fault execute(ExecContext *, trace::InstRecord *) const override;
+
+    Cycles
+    numChimePasses(ThreadContext *tc) const override
+    {
+        return ArmStaticInst::numSveChimePasses(tc,
+            ArmStaticInst::getCurSveVecLen<Element>(tc));
+    }
 };
 }};
 
@@ -408,6 +499,13 @@ class %(class_name)s : public %(base_class)s
     }
 
     Fault execute(ExecContext *, trace::InstRecord *) const override;
+
+    Cycles
+    numChimePasses(ThreadContext *tc) const override
+    {
+        return ArmStaticInst::numSveChimePasses(tc,
+            ArmStaticInst::getCurSveVecLen<Element>(tc));
+    }
 };
 }};
 
@@ -434,6 +532,13 @@ class %(class_name)s : public %(base_class)s
     }
 
     Fault execute(ExecContext *, trace::InstRecord *) const override;
+
+    Cycles
+    numChimePasses(ThreadContext *tc) const override
+    {
+        return ArmStaticInst::numSveChimePasses(tc,
+            ArmStaticInst::getCurSveVecLen<Element>(tc));
+    }
 };
 }};
 
@@ -460,6 +565,13 @@ class %(class_name)s : public %(base_class)s
     }
 
     Fault execute(ExecContext *, trace::InstRecord *) const override;
+
+    Cycles
+    numChimePasses(ThreadContext *tc) const override
+    {
+        return ArmStaticInst::numSveChimePasses(tc,
+            ArmStaticInst::getCurSveVecLen<Element>(tc));
+    }
 };
 }};
 
@@ -486,6 +598,13 @@ class %(class_name)s : public %(base_class)s
     }
 
     Fault execute(ExecContext *, trace::InstRecord *) const override;
+
+    Cycles
+    numChimePasses(ThreadContext *tc) const override
+    {
+        return ArmStaticInst::numSveChimePasses(tc,
+            ArmStaticInst::getCurSveVecLen<Element>(tc));
+    }
 };
 }};
 
@@ -512,6 +631,13 @@ class %(class_name)s : public %(base_class)s
     }
 
     Fault execute(ExecContext *, trace::InstRecord *) const override;
+
+    Cycles
+    numChimePasses(ThreadContext *tc) const override
+    {
+        return ArmStaticInst::numSveChimePasses(tc,
+            ArmStaticInst::getCurSveVecLen<Element>(tc));
+    }
 };
 }};
 
@@ -539,6 +665,13 @@ class %(class_name)s : public %(base_class)s
     }
 
     Fault execute(ExecContext *, trace::InstRecord *) const override;
+
+    Cycles
+    numChimePasses(ThreadContext *tc) const override
+    {
+        return ArmStaticInst::numSveChimePasses(tc,
+            ArmStaticInst::getCurSveVecLen<TPElem>(tc));
+    }
 };
 }};
 
@@ -565,6 +698,13 @@ class %(class_name)s : public %(base_class)s
     }
 
     Fault execute(ExecContext *, trace::InstRecord *) const override;
+
+    Cycles
+    numChimePasses(ThreadContext *tc) const override
+    {
+        return ArmStaticInst::numSveChimePasses(tc,
+            ArmStaticInst::getCurSveVecLen<Element>(tc));
+    }
 };
 }};
 
@@ -591,6 +731,13 @@ class %(class_name)s : public %(base_class)s
     }
 
     Fault execute(ExecContext *, trace::InstRecord *) const override;
+
+    Cycles
+    numChimePasses(ThreadContext *tc) const override
+    {
+        return ArmStaticInst::numSveChimePasses(tc,
+            ArmStaticInst::getCurSveVecLen<Element>(tc));
+    }
 };
 }};
 
@@ -620,6 +767,13 @@ class %(class_name)s : public %(base_class)s
     }
 
     Fault execute(ExecContext *, trace::InstRecord *) const override;
+
+    Cycles
+    numChimePasses(ThreadContext *tc) const override
+    {
+        return ArmStaticInst::numSveChimePasses(tc,
+            ArmStaticInst::getCurSveVecLen<Element>(tc));
+    }
 };
 }};
 
@@ -1169,6 +1323,13 @@ class %(class_name)s : public %(base_class)s
     }
 
     Fault execute(ExecContext *, trace::InstRecord *) const override;
+
+    Cycles
+    numChimePasses(ThreadContext *tc) const override
+    {
+        return ArmStaticInst::numSveChimePasses(tc,
+            ArmStaticInst::getCurSveVecLen<Element>(tc));
+    }
 };
 }};
 
@@ -1200,6 +1361,13 @@ class %(class_name)s : public %(base_class)s
     }
 
     Fault execute(ExecContext *, trace::InstRecord *) const override;
+
+    Cycles
+    numChimePasses(ThreadContext *tc) const override
+    {
+        return ArmStaticInst::numSveChimePasses(tc,
+            ArmStaticInst::getCurSveVecLen<Element>(tc));
+    }
 };
 }};
 
@@ -1227,6 +1395,13 @@ class %(class_name)s : public %(base_class)s
     }
 
     Fault execute(ExecContext *, trace::InstRecord *) const override;
+
+    Cycles
+    numChimePasses(ThreadContext *tc) const override
+    {
+        return ArmStaticInst::numSveChimePasses(tc,
+            ArmStaticInst::getCurSveVecLen<Element>(tc));
+    }
 };
 }};
 
@@ -1254,6 +1429,13 @@ class %(class_name)s : public %(base_class)s
     }
 
     Fault execute(ExecContext *, trace::InstRecord *) const override;
+
+    Cycles
+    numChimePasses(ThreadContext *tc) const override
+    {
+        return ArmStaticInst::numSveChimePasses(tc,
+            ArmStaticInst::getCurSveVecLen<Element>(tc));
+    }
 };
 }};
 
@@ -1280,6 +1462,13 @@ class %(class_name)s : public %(base_class)s
     }
 
     Fault execute(ExecContext *, trace::InstRecord *) const override;
+
+    Cycles
+    numChimePasses(ThreadContext *tc) const override
+    {
+        return ArmStaticInst::numSveChimePasses(tc,
+            ArmStaticInst::getCurSveVecLen<Element>(tc));
+    }
 };
 }};
 

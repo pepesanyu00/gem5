@@ -612,6 +612,18 @@ class ArmStaticInst : public StaticInst
         return getCurSveVecLenInBits(tc) / (8 * sizeof(T));
     }
 
+    /**
+     * Number of chime passes ("passes = ceil(eCount / lanes)") needed to
+     * process eCount active SVE elements with the number of vector lanes
+     * configured on this thread's ISA (ArmISA::ISA::sve_lanes /
+     * sve_lanes_se). Returns 1 (no scaling) if lanes is configured as
+     * unbounded (0), reproducing gem5's historical behavior. This is the
+     * single source of truth for the SVE chime formula; instruction
+     * classes should call it from their numChimePasses() override as
+     * `ArmStaticInst::numSveChimePasses(tc, getCurSveVecLen<Element>(tc))`.
+     */
+    static Cycles numSveChimePasses(ThreadContext *tc, unsigned eCount);
+
     static unsigned getCurSmeVecLenInBits(ThreadContext *tc);
 
     static unsigned

@@ -64,6 +64,13 @@ def template SveMemFillSpillOpDeclare {{
         {
             %(fa_code)s
         }
+
+        Cycles
+        numChimePasses(ThreadContext *tc) const override
+        {
+            return ArmStaticInst::numSveChimePasses(tc,
+                ArmStaticInst::getCurSveVecLen<TPElem>(tc));
+        }
     };
 }};
 
@@ -98,6 +105,13 @@ def template SveContigMemSSOpDeclare {{
         {
             %(fa_code)s
         }
+
+        Cycles
+        numChimePasses(ThreadContext *tc) const override
+        {
+            return ArmStaticInst::numSveChimePasses(tc,
+                ArmStaticInst::getCurSveVecLen<TPElem>(tc));
+        }
     };
 }};
 
@@ -131,6 +145,13 @@ def template SveContigMemSIOpDeclare {{
         annotateFault(ArmISA::ArmFault *fault) override
         {
             %(fa_code)s
+        }
+
+        Cycles
+        numChimePasses(ThreadContext *tc) const override
+        {
+            return ArmStaticInst::numSveChimePasses(tc,
+                ArmStaticInst::getCurSveVecLen<TPElem>(tc));
         }
     };
 }};
@@ -465,6 +486,16 @@ def template SveIndexedMemVIMicroopDeclare {{
             %(fa_code)s
         }
 
+        Cycles
+        numChimePasses(ThreadContext *tc) const override
+        {
+            // Each micro-op of a gather/scatter transfers `numElems`
+            // elements (already computed at decode time), unlike the
+            // contiguous mem templates where the whole vector width is
+            // transferred by a single (macro) instruction.
+            return ArmStaticInst::numSveChimePasses(tc, numElems);
+        }
+
         std::string
         generateDisassembly(Addr pc,
                             const loader::SymbolTable *symtab) const override
@@ -551,6 +582,12 @@ def template SveIndexedMemSVMicroopDeclare {{
         annotateFault(ArmISA::ArmFault *fault) override
         {
             %(fa_code)s
+        }
+
+        Cycles
+        numChimePasses(ThreadContext *tc) const override
+        {
+            return ArmStaticInst::numSveChimePasses(tc, numElems);
         }
 
         std::string

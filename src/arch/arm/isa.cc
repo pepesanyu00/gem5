@@ -114,6 +114,7 @@ ISA::ISA(const Params &p) : BaseISA(p, "arm"), system(NULL),
         physAddrRange = system->physAddrRange();
         sveVL = system->sveVL();
         smeVL = system->smeVL();
+        sveLanes = system->sveLanes();
 
         release = system->releaseFS();
     } else {
@@ -123,6 +124,7 @@ ISA::ISA(const Params &p) : BaseISA(p, "arm"), system(NULL),
         physAddrRange = 32;  // dummy value
         sveVL = p.sve_vl_se;
         smeVL = p.sme_vl_se;
+        sveLanes = p.sve_lanes_se;
 
         release = p.release_se;
     }
