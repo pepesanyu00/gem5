@@ -50,6 +50,7 @@ SVE_VL=2            # SVE VL in quadwords (2 = 256 bits)
 NITER=2000
 UNROLL=32
 N_VEC_INSTS=$((NITER * UNROLL))   # = 64000
+FU_COUNT=4          # DefaultFUPool.SIMD_Unit.count
 
 RUN_RISCV=true
 RUN_ARM=true
@@ -84,6 +85,7 @@ while [[ $# -gt 0 ]]; do
         --lanes)       LANES="$2";      shift 2 ;;
         --vlen)        VLEN="$2";       shift 2 ;;
         --sve-vl)      SVE_VL="$2";     shift 2 ;;
+        --fu-count)    FU_COUNT="$2";   shift 2 ;;
         --niter)       NITER="$2"; N_VEC_INSTS=$((NITER * UNROLL)); shift 2 ;;
         --unroll)      UNROLL="$2"; N_VEC_INSTS=$((NITER * UNROLL)); shift 2 ;;
         -h|--help)
@@ -141,8 +143,8 @@ extract_num_cycles() {
 }
 
 # Compute the analytical predicted CPI for a RISC-V benchmark.
+# Returns the *realistic* prediction accounting for multi-FU parallelism.
 # Args: sew lmul mode
-# Outputs: the single-FU CPI (the relevant one based on validation results).
 predict_cpi_riscv() {
     local sew=$1 lmul=$2 mode=$3
     local micro_vlmax=$((VLEN / sew))
@@ -154,21 +156,29 @@ predict_cpi_riscv() {
         passes=$(( (micro_vlmax + LANES - 1) / LANES ))
     fi
 
+    local latency_per_uop=$((1 + passes - 1))  # opLat + passes - 1
+
     if [[ "$mode" == "chain" ]]; then
         if [[ $lmul -eq 1 ]]; then
-            # latency = opLat + passes - 1 (opLat=1 by default)
-            echo $((1 + passes - 1))
+            # Single global dependency chain → latency-bound on 1 FU.
+            echo $latency_per_uop
         else
-            # LMUL>1 chain: sum of per-slice latencies (serialized on 1 FU)
-            echo $(( lmul * (1 + passes - 1) ))
+            # LMUL>1: LMUL independent chains spread across FUs.
+            # Best case (fully parallel): max(per_step) = latency_per_uop
+            # since all slices are identical.
+            echo $latency_per_uop
         fi
     else
-        # indep: single-FU CPI = sum of occupancies = lmul * passes
-        echo $(( lmul * passes ))
+        # Independent: LMUL micro-ops × passes occupancy, spread across
+        # FU_COUNT FUs. CPI = ceil(lmul * passes / fu_count).
+        local total_occ=$(( lmul * passes ))
+        # Use awk for ceiling division to handle non-integer results
+        awk "BEGIN {printf \"%.4f\", $total_occ / $FU_COUNT}"
     fi
 }
 
 # Compute the analytical predicted CPI for an SVE benchmark.
+# Returns the *realistic* prediction accounting for multi-FU parallelism.
 # Args: elem_width mode
 predict_cpi_sve() {
     local elem_width=$1 mode=$2
@@ -186,8 +196,8 @@ predict_cpi_sve() {
         # latency = opLat + passes - 1 (opLat=1)
         echo $((1 + passes - 1))
     else
-        # indep: single-FU CPI = passes (occupancy)
-        echo $passes
+        # Independent: passes occupancy spread across FU_COUNT FUs.
+        awk "BEGIN {printf \"%.4f\", $passes / $FU_COUNT}"
     fi
 }
 
@@ -437,7 +447,7 @@ done
 
 echo ""
 echo -e "  ${BOLD}Results:${NC} ${GREEN}${pass_count} passed${NC}, ${RED}${fail_count} failed${NC}, ${YELLOW}${skip_count} skipped${NC}"
-echo -e "  ${BOLD}Config:${NC}  VLEN=${VLEN} ELEN=${ELEN} SVE_VL=${SVE_VL} LANES=${LANES} NITER=${NITER} UNROLL=${UNROLL}"
+echo -e "  ${BOLD}Config:${NC}  VLEN=${VLEN} ELEN=${ELEN} SVE_VL=${SVE_VL} LANES=${LANES} FU_COUNT=${FU_COUNT} NITER=${NITER} UNROLL=${UNROLL}"
 echo -e "  ${BOLD}Results directory:${NC} $RESULTS_DIR/"
 echo ""
 
