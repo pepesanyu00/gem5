@@ -25,7 +25,7 @@ from m5.objects import RiscvO3CPU, RiscvMinorCPU, RiscvTimingSimpleCPU
 
 #from gem5.components.boards.mem_mode import MemMode
 from gem5.components.boards.riscv_board import RiscvBoard
-from gem5.components.cachehierarchies.ruby.mesi_three_level_cache_hierarchy import MESIThreeLevelCacheHierarchy
+#from gem5.components.cachehierarchies.ruby.mesi_three_level_cache_hierarchy import MESIThreeLevelCacheHierarchy
 
 from gem5.components.memory.memory import ChanneledMemory
 from gem5.components.memory.dram_interfaces.ddr4 import DDR4_2400_16x4
