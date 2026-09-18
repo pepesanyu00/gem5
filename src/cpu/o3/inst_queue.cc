@@ -890,11 +890,22 @@ InstructionQueue::scheduleReadyInsts()
                     // but still needs to sequentially feed each
                     // lane-group (chime) through it, so it stays occupied
                     // for `passes` cycles instead of just 1.
+                    // NOTE: freeUnitNextCycle adds the FU to a list that
+                    // is drained by processFreeUnits() at the start of
+                    // IEW::tick().  Because EventFunctionWrapper fires at
+                    // Default_Pri (0), which is *before* CPU_Tick_Pri (50),
+                    // calling freeUnitNextCycle at clockEdge(N) means
+                    // processFreeUnits() drains it in that same cycle N's
+                    // tick — so the FU is already free when
+                    // scheduleReadyInsts() runs.  We therefore schedule the
+                    // event at clockEdge(passes) rather than
+                    // clockEdge(passes-1) so that the FU stays occupied
+                    // for exactly `passes` cycles.
                     cpu->schedule(
                         new EventFunctionWrapper(
                             [this, idx]{ fuPool->freeUnitNextCycle(idx); },
                             name() + ".vecFUFree", true),
-                        cpu->clockEdge(Cycles(passes - Cycles(1))));
+                        cpu->clockEdge(Cycles(passes)));
                 } else {
                     // Add the FU onto the list of FU's to be freed next cycle.
                     fuPool->freeUnitNextCycle(idx);

@@ -239,6 +239,9 @@ print_comparison() {
 
     printf "  %-45s  %8s  %12s  %10s  %10s  ${status_color}%8s${NC}\n" \
            "$name" "$predicted_cpi" "$num_cycles" "$measured_cpi" "${error_pct}%" "$status"
+
+    # Return non-zero for CHECK status so the summary counts it as failed
+    [[ "$status" != "CHECK" ]]
 }
 
 # =============================================================================
