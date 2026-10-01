@@ -109,6 +109,8 @@ class %(class_name)s : public %(base_class)s
     Cycles
     numChimePasses(ThreadContext *tc) const override
     {
+        if (_opClass == SimdPredAluOp)
+            return Cycles(1);
         return ArmStaticInst::numSveChimePasses(tc,
             ArmStaticInst::getCurSveVecLen<Element>(tc));
     }
@@ -140,6 +142,8 @@ class %(class_name)s : public %(base_class)s
     Cycles
     numChimePasses(ThreadContext *tc) const override
     {
+        if (_opClass == SimdPredAluOp)
+            return Cycles(1);
         return ArmStaticInst::numSveChimePasses(tc,
             ArmStaticInst::getCurSveVecLen<Element>(tc));
     }
@@ -403,6 +407,8 @@ class %(class_name)s : public %(base_class)s
     Cycles
     numChimePasses(ThreadContext *tc) const override
     {
+        if (_opClass == SimdPredAluOp)
+            return Cycles(1);
         return ArmStaticInst::numSveChimePasses(tc,
             ArmStaticInst::getCurSveVecLen<Element>(tc));
     }
@@ -470,8 +476,9 @@ class %(class_name)s : public %(base_class)s
     Cycles
     numChimePasses(ThreadContext *tc) const override
     {
-        return ArmStaticInst::numSveChimePasses(tc,
-            ArmStaticInst::getCurSveVecLen<Element>(tc));
+        // Predicate logical operations (PAND, PORR, PEOR, BIC, etc.) operate
+        // on predicate registers in 1 cycle on the dedicated PredALU.
+        return Cycles(1);
     }
 };
 }};
@@ -800,6 +807,13 @@ class SveIndexII : public SveIndexIIOp
     }
 
     Fault execute(ExecContext *, trace::InstRecord *) const override;
+
+    Cycles
+    numChimePasses(ThreadContext *tc) const override
+    {
+        return ArmStaticInst::numSveChimePasses(tc,
+            ArmStaticInst::getCurSveVecLen<Element>(tc));
+    }
 };
 }};
 
@@ -826,6 +840,13 @@ class SveIndexIR : public SveIndexIROp
     }
 
     Fault execute(ExecContext *, trace::InstRecord *) const override;
+
+    Cycles
+    numChimePasses(ThreadContext *tc) const override
+    {
+        return ArmStaticInst::numSveChimePasses(tc,
+            ArmStaticInst::getCurSveVecLen<Element>(tc));
+    }
 };
 }};
 
@@ -852,6 +873,13 @@ class SveIndexRI : public SveIndexRIOp
     }
 
     Fault execute(ExecContext *, trace::InstRecord *) const override;
+
+    Cycles
+    numChimePasses(ThreadContext *tc) const override
+    {
+        return ArmStaticInst::numSveChimePasses(tc,
+            ArmStaticInst::getCurSveVecLen<Element>(tc));
+    }
 };
 }};
 
@@ -878,6 +906,13 @@ class SveIndexRR : public SveIndexRROp
     }
 
     Fault execute(ExecContext *, trace::InstRecord *) const override;
+
+    Cycles
+    numChimePasses(ThreadContext *tc) const override
+    {
+        return ArmStaticInst::numSveChimePasses(tc,
+            ArmStaticInst::getCurSveVecLen<Element>(tc));
+    }
 };
 }};
 
@@ -1079,6 +1114,13 @@ class %(class_name)s : public %(base_class)s
     }
 
     Fault execute(ExecContext *, trace::InstRecord *) const override;
+
+    Cycles
+    numChimePasses(ThreadContext *tc) const override
+    {
+        return ArmStaticInst::numSveChimePasses(tc,
+            ArmStaticInst::getCurSveVecLen<Element>(tc));
+    }
 };
 }};
 
