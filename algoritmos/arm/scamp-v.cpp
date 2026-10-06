@@ -63,14 +63,7 @@ static inline svuint64_t set1_epi(double a, svbool_t vl) {
 #define SET1_EPI(a, vl) set1_epi(a,vl)
 
 // Extracts the first value of an SVE vector of doubles using an inline function
-static inline double get_first_pd(svfloat64_t vec) {
-    int n = svcntd(); // number of lanes for double
-    DTYPE tmp[n];
-    // The complete vector is stored; we use the "all active" mask
-    svst1_f64(svptrue_b64(), tmp, vec);
-    return tmp[0];
-}
-#define GETFIRST_PD(a) get_first_pd(a)
+#define GETFIRST_PD(vec) svlastb_f64(svptrue_pat_b64(SV_VL1), vec)
 
 
 

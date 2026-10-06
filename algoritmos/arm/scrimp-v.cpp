@@ -68,14 +68,7 @@ static inline svuint64_t set1_epi(double a, svbool_t vl) {
 
 // Extracts the first value of a vector register and puts it into a float64_t scalar (get), and vice versa (set), takes a float64_t scalar and puts it into the first value of the vector.
 // Extracts the first value of an SVE vector of doubles using an inline function
-static inline double get_first_pd(svfloat64_t vec) {
-    int n = svcntd(); // number of lanes for double
-    DTYPE tmp[n];
-    // The complete vector is stored; we use the "all active" mask
-    svst1_f64(svptrue_b64(), tmp, vec);
-    return tmp[0];
-}
-#define GETFIRST_PD(a) get_first_pd(a)
+#define GETFIRST_PD(vec) svlastb_f64(svptrue_pat_b64(SV_VL1), vec)
 
 // Extracts the minimum from a vector register and puts it into a float64_t scalar, variable 'b' is the initial maximum value.
 #define REDMIN_PD(a, b, vl) svminv_f64(vl, svmin_f64_m(vl, a, svdup_f64(b)))
